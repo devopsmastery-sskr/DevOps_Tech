@@ -1,0 +1,88 @@
+VaultServer
+1)Download vault
+2)Install Vault
+3)Configure Vault
+4)Set Environment variable
+5)Strat vault server
+6)Initialize and Unseal Vault
+
+7)enable key/value secret engine
+8)store secrets
+9)retrive secrets
+10)enable approle authentication
+11)create policy for this secret
+12)create approle with policy
+13)Now generate role-id & secre-id
+14)Login with generated ids
+
+vault-server:
+===============
+=====================
+   export VAULT_ADDR='http://0.0.0.0:8200'
+1)  $ vault auth list
+2)enable approle authentication
+    $ vault auth enable approle
+3)enable secrets
+    $ vault secrets enable -version=2 -path=tomcat/port-secrets kv
+    $ vault secrets list
+4)Add secrets
+	$ vault kv put tomcat/port-secrets/ports portno=8080
+5)retrive secrets
+	$ vault kv get tomcat/port-secrets/ports
+        output:
+        ---------
+            ========= Secret Path =========
+                tomcat/port-secrets/data/ports
+
+                ======= Metadata =======
+                Key                Value
+                ---                -----
+                created_time       2024-07-18T05:51:39.270354509Z
+                custom_metadata    <nil>
+                deletion_time      n/a
+                destroyed          false
+                version            1
+
+                ===== Data =====
+                Key        Value
+                ---        -----
+                port-no    8080
+
+6)create policy for this secret in specific folder (/opt/)
+    $ cat tomcatports.hcl
+        path "tomcat/*" {
+        capabilities = ["read"]
+        }
+    ====================================
+    	vault policy write tomcatports -<<EOF
+        {
+		 capabilities = ["read"]
+		 }
+		 EOF
+    =====================================
+7) $ vault policy write tomcatports tomcatports.hcl
+	$ vault policy list
+	$ vault policy read tomcatports
+8)create approle with policy
+    $ vault write auth/approle/role/tomcatports token_policies="tomcatports" token_ttl=1h token_max_ttl=4h secret_id_num_uses=5
+    $ vault write auth/approle/role/tomcatports token_policies="tomcatports" token_ttl="10000h" token_max_ttl="400000h" secret_id_num_uses="1000000"
+        $ vault list auth/approle/role
+        $ vault read auth/approle/role/tomcatports
+9)generate role-id
+    $ vault read auth/approle/role/tomcatports/role-id 
+     (copy this role-id to paste in vaul-agent server)
+			Key        Value
+			---        -----
+			role_id    a037c1a8-e3bf-b1cb-f96e-a2679badcfb9
+10)generate secre-id
+    $ vault write -f  auth/approle/role/tomcatports/secret-id 
+	(copy this secret-id to paste in vaul-agent server)
+				Key                   Value
+			---                   -----
+			secret_id             0cc0cc03-a4c9-a22e-f1e5-d7bb89074867
+			secret_id_accessor    d24cf12d-68a4-7190-fd42-fe2168506f7b
+
+
+11)to login with generated ids
+	$ vault write auth/approle/login role_id="<value>" secret_id="<value>"
+

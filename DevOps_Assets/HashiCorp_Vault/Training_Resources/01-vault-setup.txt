@@ -1,0 +1,58 @@
+Vault installation in RHEL server using yum repo:
+===============================================
+    sudo yum install -y yum-utils
+    sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+    sudo yum -y install vault
+
+Vault configuration location:
+    /etc/vault.d
+To initialize vault
+ $ vault
+ $ vault status
+ $ vault operator init
+        will generate unseal 5 keys & initisl root token with threshold 3(default)
+   https://developer.hashicorp.com/vault/docs/commands/operator/init
+
+   ---> custom vault initialize:
+   $ vault operator init -key-shares=5 -key-threshold=3
+
+    if error make sure checking below properties in vault.hcl file
+    # HTTP listener
+    listener "tcp" {
+    address = "0.0.0.0:8200"
+    tls_disable = 1
+    }
+
+    # HTTPS listener
+    #listener "tcp" {
+    #  address       = "0.0.0.0:8200"
+    #  tls_cert_file = "/opt/vault/tls/tls.crt"
+    #  tls_key_file  = "/opt/vault/tls/tls.key"
+    #
+	}
+useful commands:
+        export VAULT_SKIP_VERIFY=true
+        export VAULT_ADDR='http://127.0.0.1:8200'
+        export VAULT_TOKEN="root_token"
+        curl -v http://0.0.0.0:8200/v1/sys/seal-status
+In summary, export VAULT_ADDR=https://your-vault-address:8200 is required to specify the location of your HashiCorp Vault server so that client applications and tools can securely communicate with it over HTTPS using the correct base URL and port.
+
+To set an environment variable like VAULT_ADDR permanently RHELserver, you add it to a shell configuration file. 
+ if you are using bash, the configuration file is usually ~/.bashrc for individual users or /etc/bashrc for system-wide settings.
+           $ vi ~/.bashrc
+           $ export VAULT_ADDR=https://your-vault-address:8200
+           $ source ~/.bashrc
+           $ echo $VAULT_ADDR -> to verify
+ $ vault operator unseal <key>
+    it will unseal the vault , now login
+ $ vault login
+ Set VAULT_ADDR Environment Variable
+    If Vault is running on a different address or port, you need to set the VAULT_ADDR environment variable to point to the correct address:
+     $ export VAULT_ADDR=https://your-vault-address:8200
+
+PORTS:
+=======
+vault server: 8200 - client
+vault servers" 8201 - cluster operations
+API request : 443 REquests
+Consul: 8500 HTTP API

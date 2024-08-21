@@ -1,0 +1,46 @@
+to check types of authentications enabled
+ $ vault auth list
+to create one more token for login
+ $ vault token create
+to revoled token
+ $ vault token revoke <token-value>
+to login from console
+ $ vault login token=<token-value>
+if we enable any type of auth methods by default it will mount to a particular path in vault cluster
+ $ vault path-help auth/token
+
+to enable userpass auth
+ $ vault auth enable userpass
+to crete username & passwd
+ $ vault write auth/userpass/users/gvr password=12345
+to read user details
+ $ vault read auth/userpass/users/gvr
+to,login from console
+ $ vault login -method=userpass username=gvr password=12345
+ vault stores password as in the form of token
+to disble user
+ $ vault auth disable userpass
+ $ vault path-help auth/userpass
+
+ =================================
+ Github auth enabling
+$ vault auth enable github
+ to crete github authentication need to configure gihub organization
+$ vault write auth/github/config organization=sivakumar
+to verify
+$ vault read  auth/github/config
+to login using github token
+ goto gihub -> settings -> developer settings -> personal access token
+
+ $ vault login -method=github token=<token>
+   now vault will go to github and verify token value and validity
+useful commands for github auth:
+---------------
+ $ vault write auth/github/config organization=sivakumar
+ $ vault write auth/github/map/teams/dev value=dev-policy/default
+ $ vault write auth/github/map/users/gvr value=gvr-policy
+ to read teams
+  $ vault read auth/github/map/teams -->shows list of teams
+  $ vault read auth/github/map/teams/dev-team --> shows policies also
+ $ vault auth disable github
+ $ vault path-help auth/github

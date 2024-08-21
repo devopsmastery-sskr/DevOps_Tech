@@ -1,0 +1,55 @@
+DEVOPS:
+------------
+1) IN Agile SDLC , there will be more impact on operation teams as there is continuos code chnages & deploys and testing on QA team in single iteration.
+2) Here dev team is agile sdlc implementing and ops team (waterfall)is ITL driven for stable environment, here devops do is collobrate teams and intergrate everything with automation
+
+CI:
+---
+1) After every single commit, it will be build and tested and send notifications
+2) Goal is to detect defects at early stage
+
+CD:
+----
+1)CD means  server provising, dependencies, conf chnages, network, artifact deploy
+
+GitHub Repo Link:
+--------------------
+https://github.com/devopshydclub/vprofile-project
+
+
+AWS SETUP:
+------------
+1) User Creation:
+    IAM --> users --> create user (itadmin) -> attch policies(admin) -> console login url: https://010928221024.signin.aws.amazon.com/console
+                        https://sskrdevopsmastery.signin.aws.amazon.com/console
+2) Billing Alaram:
+    Billing dashboard --> billing preferences -> activate Invoice delivery preferences & Alert preferences  
+3) CloudWatch:
+    Alarams --> all alarams --> create alaram -> metrics -> billing -> total estimated charges -> 
+4) Certificate manager
+    acm -> certificate manager -> request certificate -> public cert -> *.skdopsl.xyz -> dns validation -> request 
+    click on cert id -> copy CNAME name & CNAME value -> add this to our domain -> godaddy -> manage domains -> dns -> add new record -> cname -> add values
+5) Alais creation for iam user
+
+
+??? what is nfs & how to configure it among rhel servers ???
+
+VM BOX SETUP
+--------------
+
+https://github.com/hkhcoder/vprofile-project
+
+$ vagrant global-status
+$ vagrant up ( in location where vagrant file present)
+
+Ubuntu ssh setup to connect from host machine
+-----------------------------------------------
+$ sudo apt update
+$ sudo apt upgrade
+$ sudo apt install openssh-server
+$ sudo service ssh start
+$ sudo service ssh enable
+$ sudo service ssh status
+$ sudo ufw allow ssh
+$ sudo ufw enable
+$ sudo ufw status

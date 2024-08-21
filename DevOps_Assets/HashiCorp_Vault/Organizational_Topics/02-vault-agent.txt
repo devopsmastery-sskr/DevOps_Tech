@@ -1,0 +1,124 @@
+vaul-agent setup in tomcat server:
+=================================
+=================================
+
+1)vault installtion on tomcat server
+	Two-methods
+	----------
+		method-1
+		--------
+		$ sudo yum install -y yum-utils
+		$ sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+		$ sudo yum -y install vault
+		
+		method-2
+		----------
+	     create directory /opt/vault-agent & move to directory and download binary file
+	         $ sudo wget https://releases.hashicorp.com/vault/1.17.2/vault_1.17.2_linux_386.zip
+			 $ sudo unzip vault_1.17.2_linux_386.zip
+2)[ root@ip-172-31-36-14 /opt/vault-agent ]# ll
+            total 530028
+            -rwxrwxrwx 1 root root      4919 Jul  5 19:24 LICENSE.txt
+            -rwxrwxrwx 1 root root       576 Jul 30 11:43 agent-config.hcl
+            -rwxrwxrwx 1 root root        37 Jul 18 06:48 role_id.txt
+            -rwxrwxrwx 1 root root        37 Jul 18 06:48 secret_id.txt
+            ===>>>  -rw-r----- 1 root root        95 Jul 30 11:48 secrets(it will be creted automatically when vault agent starts)
+            -rwxrwxrwx 1 root root       113 Jul 30 11:47 server.hcl
+            -rwxrwxrwx 1 root root 407739274 Jul  5 19:24 vault
+            -rwxrwxrwx 1 root root 134967880 Jul 10 13:57 vault_1.17.2_linux_386.zip
+
+3) Configure Vault Agent
+	Create a configuration file for Vault Agent (agent-config.hcl) in /opt/vault-agent directory:
+                    pid_file = "/var/run/vault-agent.pid"  ## create this manually
+                    vault {
+                    address = "http://54.91.165.255:8200"
+                    }
+
+                    auto_auth {
+                            method {
+                            type = "approle"
+                            mount_path = "auth/approle"
+                            config = {
+                                    role_id_file_path = "/opt/vault-agent/role_id.txt"    ## same server location
+                                    secret_id_file_path = "/opt/vault-agent/secret_id.txt"
+                                    token_renewal_interval = "7200h"
+                                    token_ttl = "7200h"
+                                    }
+                            }
+
+                            sink {
+                                    type = "file"
+                                    config = {
+                                    path = "/opt/vault-agent/secrets"
+                            }
+                            }
+                                    }
+
+                            template {
+                            source      = "/opt/vault-agent/server.hcl"
+                            destination = "/opt/apache-tomcat-9.0.91/conf/server-11.xml"
+                    }
+        
+Check and add below properties as required:
+============================================
+4) Edit catalina.sh
+	add below property: CATALINA_OPTS="$CATALINA_OPTS -Dcatalina.config=file:///opt/tomcat/server.xml"
+5) Create or Modify setenv.sh
+	export CATALINA_OPTS="$CATALINA_OPTS -Dcatalina.config=file:///opt/tomcat/server.xml"
+=============================================
+
+6) [ root@ip-172-31-36-14 /opt/vault-agent ]# cat server.hcl
+        {{ with secret "tomcat/port-secrets/ports" }}
+        export portno="{{ .Data.data.portno }}"
+        {{ end }}
+        ---------------
+        second way:
+                portno="{{ with secret "tomcat/port-secrets/ports" }}{{ .Data.data.portno }}{{ end }}"
+7) In server.xml file ( destination location) below should be the format.
+             <Connector port="${{portno}}" protocol="HTTP/1.1"
+           connectionTimeout="20000"
+           redirectPort="8443"
+           maxParameterCount="1000"
+           />
+    above will be replaced by """ export PORT_NO="8080" """, need to check and add in start files like setenv.sh....
+8) start vault-agent
+    $ /opt/vault-agent/vault agent -config=/opt/vault-agent/agent-config.hcl
+
+    ====================================================================
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    =================================================================
+Directly use setenv.sh and it should be below, instead of adding role_id & secret_id in other place:
+-------------------------------------------------------------
+            #!/bin/bash
+            CATALINA_OPTS="$CATALINA_OPTS -Dcatalina.config=/opt/apache-tomcat-9.0.91/conf/server.xml"
+            
+            
+            echo "Executing setenv.sh"
+
+            # Set the Vault address
+            export VAULT_ADDR='http://54.91.165.255:8200'
+
+            # Set your Role ID and Secret ID
+            export ROLE_ID='a037c1a8-e3bf-b1cb-f96e-a2679badcfb9'
+            export SECRET_ID='9144f946-e1e8-b5d6-ca97-66b6ae088e86'
+
+            # Authenticate using AppRole and get a token
+            #export VAULT_TOKEN=$(vault write -f auth/approle/login role_id=$ROLE_ID secret_id=$SECRET_ID | grep '^token' | awk '{print $2}')
+            export VAULT_TOKEN='hvs.CAESILsGgIAXmwLEjoCmyzs__WsU6SPCxtUQCUKV_ADRzld0Gh4KHGh2cy53TUc0NmFoWHN1UHJsU0F1T29Sd3hUSmU'
+
+            # Optionally load secrets into environment variables
+            export portno=$(vault kv get -field=portno tomcat/port-secrets/ports)
+            #export db_pass=$(vault kv get -field=db_pass secret/tomcat)
+    
+
+loading setenv.sh stteps:
+-----------------
+        $ source setenv.sh
+        $ ./catalina.sh start
+
+Use the Token in setenv.sh
+-----------------------------
+    Export the Token: Once you have the token, you can use it in your setenv.sh file. However, keep in mind that hardcoding tokens in scripts is not a best practice for production environments. Instead, consider retrieving the token dynamically.
+
+????? need to check setenv.sh is loading or not while tomcat startup ??????
+    

@@ -1,0 +1,34 @@
+APM  setup for tomcat application in rhel server :
+-------------------------------------------------
+1) Download the New Relic Java Agent:
+    $ wget https://download.newrelic.com/java_agent/latest/newrelic-java.zip
+    $ unzip newrelic-java.zip
+    $ sudo mv newrelic /opt/newrelic
+2) Configure the New Relic Java Agent
+    $ cd /opt/newrelic
+    $ sudo vi newrelic.yml
+        license_key: 
+        agent_enabled: true
+        app_name: 11111-XXXXXXXXXXXXX (XXX)-Production
+        high_security: false
+        enable_auto_app_naming: false
+        enable_auto_transaction_naming: true
+        log_level: off
+        audit_mode: false
+        log_file_count: 1
+        log_limit_in_kbytes: 0
+        log_daily: false
+        log_file_name: newrelic_agent.log
+        log_file_path: /opt/newrelic/java/logs/
+        proxy_host: hpeproxy.its.hpecorp.net
+        proxy_port: 8080
+3) Modify the Tomcat Startup Script
+    $ cd /path/to/tomcat/bin
+    $ sudo vi setenv.sh
+            -javaagent:/opt/newrelic/java/newrelic.jar -Dnewrelic.config.appserver_port=19991 -Dnewrelic.tempdir=/opt/cloudhost/liferay-tomcat/liferay_instance1/tomcat-8.0.32/temp
+
+
+
+
+
+

@@ -1,0 +1,89 @@
+1) problems with direct  docker containers:
+------------------------
+    1)no proper load balancing
+    2)not reliable --> no self healing(if container crash, docker is not able to replace automatically)
+    3)no proper volume management
+    4)no strong network connectivity
+    5)no auto scaling
+    6)no secrets and config management
+2)Docker architecture
+    docker = suit = image build + image pull through its hub + running the images as containers
+    docker is providing runtime environment to run docker images...
+    client = docker command
+    docker daemon = docker engine
+    daemon/server responds to client
+    docker run nginx  --> checks image available in local or not, if not available pull it and keep it in local
+    run a continer and send output to client
+    +-----------------+
+| Docker Client   |
++--------+--------+
+         |
+         v
++--------+--------+   Docker API
+| Docker Daemon   |  <------------------------>
+|   (dockerd)     |   Communication Layer
++--------+--------+
+         |
+         v
++--------+--------+      +-----------------+
+| Docker Engine   | <--> | Docker Registry |
+|   (API, CLI)    |      | (e.g., Hub)     |
++----|----+-------+      +-----------------+
+     |    |
+     |    v
+     |  +-----------------+
+     |  | Docker Images   |
+     |  +-----------------+
+     |
+     v
++----+--------------------+
+| Docker Containers       |
+| (Running Instances)     |
++-------------------------+
+
+3) EKS top level functioning:
+    we have yaml files in local ->  github -> directlly pull to control plane or workstation where kubectl & docker host is running -> worker nodes
+4) official cli of amazon eks is "eksctl"
+    eksctl --> create and manage EKS cluster
+    kubectl --> to manage containers in kubernetes cluster
+    1)install eksctl
+    2)install kubectl
+        mv to local and check verion $kubectl version --client
+    3)aws authentication to create eks
+        $ aws configure or
+        work station -> security -> modify iam role(roboshop ec2 role ssm)
+
+        $ eksctl create cluster --config-file=eks.yaml
+        $ eksctl delete cluster --config-file=eks.yaml
+5) Kuberbetes resources:
+    $ kubectl api-resources
+
+    1)Namespace --> isolated project where you can create resources related to your project
+        $ kubectl create namespace expense
+        $ kubectl get ns (or) kubectl get namespace
+        $ kubectl delete namespace expense
+        $ kubectl describe ns expense
+        $ kubectl apply -f <file_name>.yaml
+        $ kubectl delete -f <file_name>.yaml
+    2)pod --> pod is smallest deployable unit in kubernetes.
+        pod vs container
+        -------------------
+        a pod contains multiple containers. containers inside pod share same n/w and storage.
+            in same pod 2 containers, second one is side-car container like fluent-bit process..
+
+        $ kubectl get pods
+        $ kubectl describe pod nginx
+        $ kubectl exec -it multi-container -c alma -- bash (connecting to one particulat container)
+    3)labels --> Labels are used to organize and select subsets of objects. They can be used for grouping, filtering, and managing resources. Labels can be used with selectors to query Kubernetes objects. For example, you can use labels to select specific pods or services. Labels are limited to 63 characters per key and value, and they can only contain lowercase letters, numbers, and some special characters (-, _, .).
+
+    4)annotations -->  Annotations are used to store arbitrary metadata that is not intended for selection or querying. They can include information such as build information, contact details, or any other non-identifying data. Annotations cannot be used to select objects. They are meant for human and machine readability rather than for querying. annotations can be much larger, supporting up to 256k characters, and they have fewer restrictions on key and value formats (e.g., keys can be in mixed case).
+
+    5)env --> env is reserved variable , this is used to set environment variables inside coontainer
+        $ kubectl exec -it env-test  -- bash
+            $ env
+    6)resources --> for usge of resources
+
+
+            
+
+    

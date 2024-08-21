@@ -1,0 +1,72 @@
+Newrelic-infra agent on RHEL server:
+---------------------------------------
+ 1)Add newelic repository
+    [root@p1l000000 yum.repos.d]# cat newrelic-infra.repo
+    [newrelic-infra]
+    name=New Relic Infrastructure
+    baseurl=https://download.newrelic.com/infrastructure_agent/linux/yum/el/7/x86_64/
+    gpgkey=https://download.newrelic.com/infrastructure_agent/keys/newrelic_rpm_key_current.gpg
+    gpgcheck=1
+    repo_gpgcheck=1[root@p1000000 yum.repos.d]#
+    ======================================================
+    =========================================================
+    sudo tee /etc/yum.repos.d/newrelic-infra.repo <<EOF
+            [newrelic-infra]
+            name=New Relic Infrastructure
+            baseurl=https://yum.newrelic.com/stable/el/7/x86_64/
+            gpgkey=https://download.newrelic.com/548C16BF.gpg
+            gpgcheck=1
+            enabled=1
+            EOF
+        Note: Replace el/7 with el/8 for RHEL 8 or modify it according to your RHEL version.
+2) Install newrelic agent:
+    $ sudo yum install newrelic-infra -y
+3) Edit the configuration file:
+    $ vi /etc/newrelic-infra.yml  
+        license_key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        proxy: http://xxxxproxy.xxx.xxxx.net:8080
+        verbose: 0
+        custom_attributes:
+                eprid: '11111'
+                appName: 111111-Name Of Application-Production
+                environment: Production
+                location: AAAAA
+        logging:
+            level: info
+        enable_process_metrics: true
+        metrics_process_sample_rate: 300
+4) After installing newrelic-infra under "/etc" along with newrelic-infra.yml file  folder "newrelic-infra" will be created, it has following files and folders
+        file -> agent.yml
+        fold -> integrations.d 
+        fold -> logging.d 
+
+    agent.yml file is almost similar to newrelic-infra.yml till location.
+    in logging.d folder, --> tomcat_log.yml
+        $ vi tomcat_log.yml 
+            ###############################################################################
+            # Log forwarder configuration file example                                    #
+            # Source: file                                                                #
+            # Available customization parameters: attributes, max_line_kb, pattern        #
+            ###############################################################################
+            logs:
+            - name: catalina1.out
+                file: /opt/cloudhost/liferay-tomcat/liferay_instance1/logs/liferay.log
+                attributes:
+                application: 11111-XXXXXXXXXXX (XXX) -Production
+                node: tomcat1
+                maintainer: XXXXXXXX@XXX.com
+
+            - name: catalina2.out
+                file: /opt/cloudhost/liferay-tomcat/liferay_instance2/logs/liferay.log
+                attributes:
+                application: 11111-XXXXXXXXXXX (XXX) -Production
+                node: tomcat2
+                maintainer: XXXXXXXX@XXX.com
+   
+
+
+
+
+
+
+
