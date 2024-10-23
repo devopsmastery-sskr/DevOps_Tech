@@ -1,0 +1,50 @@
+yum list installed | grep -i newrelic
+sudo rm -rf /etc/newrelic-infra
+nri-agent status
+sudo systemctl stop td-agent 
+sudo systemctl stop fluentbit
+
+sudo apt-get remove td-agent fluentbit
+
+sudo rpm -e td-agent 
+sudo rpm -e fluentbit
+sudo rm -rf /etc/td-agent 
+sudo rm -rf /etc/fluentbit
+sudo dpkg -l | grep td-agent
+sudo rpm -qa | grep fluentbit
+
+sudo rm -rf /var/db/newrelic-infra/newrelic-integrations/logging/
+
+
+https://download.newrelic.com/infrastructure_agent/binaries/linux/386/newrelic-infra_linux_1.52.3_386.tar.gz
+ 
+sudo curl -o /etc/yum.repos.d/newrelic-infra.repo https://download.newrelic.com/infrastructure_agent/linux/yum/el/9/x86_64/newrelic-infra.repo
+ 
+sudo curl -o /etc/yum.repos.d/newrelic-infra.repo https://download.newrelic.com/infrastructure_agent/linux/yum/el/7/x86_64/newrelic-infra.repo
+ 
+sudo curl -o /etc/yum.repos.d/newrelic-infra.repo https://download.newrelic.com/infrastructure_agent/linux/yum/el/8/x86_64/newrelic-infra.repo
+
+
+Refresh the repositories:
+sudo yum -q makecache -y --disablerepo='*' --enablerepo='newrelic-infra'
+
+
+Install the newrelic-infra package in root (default),
+sudo yum install newrelic-infra -y
+
+
+nri-agent info
+
+
+
+/var/db/newrelic-infra/newrelic-integrations/logging/
+
+
+
+verbose: 1
+log_file: /var/log/newrelic-infra/newrelic-infra.log
+
+
+
+SELECT * FROM Log WHERE appName = '210135-Partner Ready Portal (PRP)-STG3_apache' WHERE filePath = '/opt/cloudhost/logs/apache/ssl_request_log'
+ 
