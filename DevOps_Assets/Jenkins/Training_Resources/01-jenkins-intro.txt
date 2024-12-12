@@ -14,7 +14,7 @@ scripted way
 
 jenkins master-slave architecture:
 --------------------------------------
-1. when work is there, master calls agent and ask them to do work-ssh
+1. when work is there, master calls agent and ask them to do work->ssh
 2. daily agent comes to master and ask if there is any work
 
 

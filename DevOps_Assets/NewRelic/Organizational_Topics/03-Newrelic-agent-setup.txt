@@ -48,3 +48,12 @@ log_file: /var/log/newrelic-infra/newrelic-infra.log
 
 SELECT * FROM Log WHERE appName = '210135-Partner Ready Portal (PRP)-STG3_apache' WHERE filePath = '/opt/cloudhost/logs/apache/ssl_request_log'
  
+
+
+logs:
+ - name: OSV_jobs_logs
+   file: /opt/cloudhost/osv_report_app/osv-batch/*.log
+   attributes:
+     logtype: OSV_jobs_logs
+     environment: Production
+     application: 210135-Partner Ready Portal (PRP)-Production
