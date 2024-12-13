@@ -2,10 +2,19 @@ pipeline{
     agent {
         label 'AGENT-1'
     }
+    options{
+        timeout(time: 1, unit: 'seconds')
+    }
     stages{
         stage('test'){
             steps {
                 echo "heloo jenkins pipeline job"
+            }
+        }
+        stage('sleep stage'){
+            steps{
+                sh 'sleep 10'
+                echo 'this for testing'
             }
         }
     }
