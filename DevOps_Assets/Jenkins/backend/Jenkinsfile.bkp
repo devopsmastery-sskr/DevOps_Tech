@@ -14,11 +14,16 @@ pipeline {
         def appVersion = '' //variable declaration
         }
     stages {
+        stage(chnaging directory){
+            sh """
+                cd DevOps_Assets/Jenkins/backend
+            """
+        }
         stage('read the version'){
             steps{
                 
                 script{
-                    sh 'cd DevOps_Assets/Jenkins/backend'
+                   
                     def packageJson = readJSON file: 'package.json'
                     appVersion = packageJson.version
                     echo "application version: $appVersion"
