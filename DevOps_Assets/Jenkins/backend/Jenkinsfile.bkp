@@ -14,31 +14,30 @@ pipeline {
         def appVersion = '' //variable declaration
         }
     stages {
-        stage('chnaging directory') {
-            steps {
-            sh """
-                cd DevOps_Assets/Jenkins/backend
-            """
-            }
-        }
+        
         stage('read the version') {
             steps{
                 
                 script{
+                 // Change to the correct directory and read the package.json file
+                    dir('DevOps_Assets/Jenkins/backend') {
                    
                     def packageJson = readJSON file: 'package.json'
                     appVersion = packageJson.version
                     echo "application version: $appVersion"
+                    }
                 }
             }
         }
         stage('Install Dependencies') {
             steps {
+                dir('DevOps_Assets/Jenkins/backend') {
                sh """
                 npm install
                 ls -ltr
                 echo "application version: $appVersion"
                """
+                }
             }
         }
         stage('Build'){
