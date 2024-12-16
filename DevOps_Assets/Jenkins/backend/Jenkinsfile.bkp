@@ -16,6 +16,7 @@ pipeline {
     stages {
         stage('read the version'){
             steps{
+                sh 'cd DevOps_Assets/Jenkins/backend'
                 script{
                     def packageJson = readJSON file: 'package.json'
                     appVersion = packageJson.version
