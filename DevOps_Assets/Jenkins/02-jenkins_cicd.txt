@@ -19,3 +19,8 @@ JSON Application build :
 5)zip the all required packages 
    zip -r <file_name>.zip * -x <file to exclude> --> build all files
    zip -r <file_name>.zip */ -x <file to exclude> --> build directories only
+
+learnings:
+==================
+++++++++++++++++++
+node js app build
