@@ -5,7 +5,8 @@ pipeline{
     options{
         timeout(time: 1, unit: 'HOURS')
         disableConcurrentBuilds()
-    }
+        //ansiColor('xterm')//to see colors in console, plugin
+     }
     environment{
         NAME = 'PROD'
         TYPE = 'JAVABased'
@@ -26,6 +27,10 @@ pipeline{
             }
         }
         stage('sleep stage'){
+            input{
+                message "is it ok to cont?"
+                ok "np,can cnt"
+            }
             steps{
                 sh 'sleep 10'
                 echo 'this for testing'
@@ -39,14 +44,35 @@ pipeline{
                 echo "Choice: ${params.CHOICE}"
                 echo "Password: ${params.PASSWORD}"
                 echo "testing github web-hook"
-                 error "intentional failure"
+                //error "intentional failure"
+            }
+        }
+        stage{
+            when{
+                expression{
+                    params.CHOICE == "One"
+                }
+                steps{
+                    echo "this is first choice with when condition"
+                }
+            }
+        }
+        stage{
+            when{
+                expression{
+                    params.CHOICE == "Two"
+                }
+                steps{
+                    echo "this is Second choice with when condition"
+                }
             }
         }
     }
-post{
+    post{
         always{
             echo "always  build"
-            }
+            //deleteDir() //always delete this project in bknd after job exec.
+        }
         failure{
             sh 'echo "during failures"'
             }

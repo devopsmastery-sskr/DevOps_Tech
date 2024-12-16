@@ -11,7 +11,8 @@ scripted way
 3. track the changes
 4. maintains the history
 
-
+if we install jenkins , home folder default is /var/lib/jenkins
+workspace is:  /var/lib/jenkins/workspace/job-name
 jenkins master-slave architecture:
 --------------------------------------
 1. when work is there, master calls agent and ask them to do work->ssh
@@ -25,9 +26,16 @@ jenkins master-slave architecture:
 WebHook:
 ---------
 in github:
-settings -> webhook -> URL -> jenkins-url/github-webhook/
+github repo -> settings -> webhook -> URL -> http://jenkins-url/github-webhook/
+ content-type: application/json, select the events
 In jenkins pipline:
 job -> build triggers -> github hook trigger
+
+
+plugin:
+-------
+pipeline stage view , need to install to view stages
+Ansicolor , to see colors in console output
 
 Jenkins- Pipeline Synatx:
 ---------------
@@ -69,4 +77,13 @@ pipeline{
 	}
 }
 
+leanings:
+=============
+++++++++++++++++++
+1)advantages vs disadvantages
+2)master-worker
+3)webhooks
+4)pipeline job
+++++++++++++++++++++
+============================ 
 
