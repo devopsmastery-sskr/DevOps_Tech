@@ -42,4 +42,17 @@ pipeline{
             }
         }
     }
+post{
+        always{
+            echo "always  build"
+        failure{
+            sh 'echo "during failures"'
+            }
+        }
+        success{
+            echo "during success"
+        }
+
+
+    }
 }
