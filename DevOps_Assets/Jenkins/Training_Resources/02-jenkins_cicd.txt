@@ -7,3 +7,15 @@ Python --> pip --> requirements.txt
 NodeJs --> npm --> package.json
 DotNet --> Nuget --> project.json
 
+our project details like name, verion, description
+dependencies and its versions
+
+JSON Application build :
+----------------------
+1)install nodejs in the server where jenkins job is going to build
+2)nodejs application must conatin "package.json" file to build artifact
+3)once built it will generate "node modules" folder
+4)install "pipeline utility steps" plugin to red version from json files
+5)zip the all required packages 
+   zip -r <file_name>.zip * -x <file to exclude> --> build all files
+   zip -r <file_name>.zip */ -x <file to exclude> --> build directories only

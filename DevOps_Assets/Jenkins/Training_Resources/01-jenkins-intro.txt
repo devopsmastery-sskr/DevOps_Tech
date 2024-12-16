@@ -34,8 +34,9 @@ job -> build triggers -> github hook trigger
 
 plugin:
 -------
-pipeline stage view , need to install to view stages
-Ansicolor , to see colors in console output
+pipeline stage view:: need to install to view stages
+Ansicolor:: to see colors in console output
+pipeline utility steps:: reads versions of json files,zipping of files
 
 Jenkins- Pipeline Synatx:
 ---------------
