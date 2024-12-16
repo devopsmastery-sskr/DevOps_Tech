@@ -50,7 +50,7 @@ pipeline{
         stage{
             when{
                 expression{
-                    params.CHOICE == "One"
+                    return params.CHOICE == "One"
                 }
                 steps{
                     echo "this is first choice with when condition"
@@ -60,7 +60,7 @@ pipeline{
         stage{
             when{
                 expression{
-                    params.CHOICE == "Two"
+                    return params.CHOICE == "Two"
                 }
                 steps{
                     echo "this is Second choice with when condition"
