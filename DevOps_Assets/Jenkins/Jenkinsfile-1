@@ -1,0 +1,83 @@
+pipeline {
+    agent {
+        label 'AGENT-1'
+    }
+    options {
+        timeout(time: 1, unit: 'HOURS')
+        disableConcurrentBuilds()
+        // ansiColor('xterm') // Uncomment if you have the AnsiColor plugin installed
+    }
+    environment {
+        NAME = 'PROD'
+        TYPE = 'JAVABased'
+    }
+    parameters {
+        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+        text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
+        booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
+        choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
+        password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
+    }
+
+    stages {
+        stage('test') {
+            steps {
+                sh 'env'
+                echo "Hello Jenkins pipeline job"
+            }
+        }
+        stage('sleep stage') {
+            input {
+                message "Is it ok to continue?"
+                ok "No problem, can continue"
+            }
+            steps {
+                sh 'sleep 10'
+                echo 'This is for testing'
+            }
+        }
+        stage('accessing parameters') {
+            steps {
+                echo "Hello ${params.PERSON}"
+                echo "Biography: ${params.BIOGRAPHY}"
+                echo "Toggle: ${params.TOGGLE}"
+                echo "Choice: ${params.CHOICE}"
+                echo "Password: ${params.PASSWORD}"
+                echo "Testing GitHub web-hook"
+                // error "Intentional failure"
+            }
+        }
+        stage('choice One') {
+            when {
+                expression {
+                    return params.CHOICE == "One"
+                }
+            }
+            steps {
+                echo "This is the first choice with when condition"
+            }
+        }
+        stage('choice Two') {
+            when {
+                expression {
+                    return params.CHOICE == "Two"
+                }
+            }
+            steps {
+                echo "This is the second choice with when condition"
+            }
+        }
+    }
+    post {
+        always {
+            echo "Always build"
+            // deleteDir() // Uncomment to always delete this project directory after job execution
+        }
+        failure {
+            sh 'echo "During failures"'
+        }
+        success {
+            echo "During success"
+        }
+    }
+}
