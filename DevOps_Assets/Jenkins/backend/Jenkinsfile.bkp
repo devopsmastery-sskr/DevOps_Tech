@@ -14,7 +14,7 @@ pipeline {
         def appVersion = '' //variable declaration
         }
     stages {
-        stage(chnaging directory){
+        stage('chnaging directory'){
             sh """
                 cd DevOps_Assets/Jenkins/backend
             """
