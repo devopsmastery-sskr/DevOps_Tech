@@ -19,8 +19,14 @@ pipeline {
         stage('Setup') {
             steps {
                 sh 'git config --global http.postBuffer ${GIT_HTTP_MAX_REQUEST_BUFFER}'
+            }
+        }
+        stage('Checkout') {
+            steps {
+                script {
                     retry(3) {
-                    checkout scm
+                        checkout scm
+                    }
                 }
             }
         }
