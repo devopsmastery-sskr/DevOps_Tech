@@ -13,9 +13,17 @@ pipeline {
     environment{
         def appVersion = '' //variable declaration
         nexusUrl = '192.168.56.114:8081/repository/backend'
-        GIT_TIMEOUT = '6000'
+         GIT_HTTP_MAX_REQUEST_BUFFER = '524288000'
         }
     stages {
+        stage('Setup') {
+            steps {
+                sh 'git config --global http.postBuffer ${GIT_HTTP_MAX_REQUEST_BUFFER}'
+                    retry(3) {
+                    checkout scm
+                }
+            }
+        }
         
         stage('read the version') {
             steps{
