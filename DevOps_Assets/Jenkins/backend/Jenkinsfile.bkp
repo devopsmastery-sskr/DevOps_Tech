@@ -12,7 +12,7 @@ pipeline {
     }
     environment{
         def appVersion = '' //variable declaration
-        nexusUrl = 'http://192.168.56.114:8081/repository/backend'
+        nexusUrl = '192.168.56.114:8081/repository/backend'
         }
     stages {
         
