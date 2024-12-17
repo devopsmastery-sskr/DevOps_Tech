@@ -56,7 +56,7 @@ pipeline {
         stage('NexusUload'){
             
             script{
-                dir('DevOps_Assets/Jenkins/backend') {
+                
                 nexusArtifactUploader(
                     nexusVersion: 'nexus3',
                     protocol: 'http',
@@ -72,7 +72,7 @@ pipeline {
                         type: 'zip']
                     ]
                 )
-            }
+            
             }
         }
     }
