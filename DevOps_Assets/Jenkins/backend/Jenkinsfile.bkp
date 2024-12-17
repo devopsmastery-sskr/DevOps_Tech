@@ -25,7 +25,7 @@ pipeline {
                    
                     def packageJson = readJSON file: 'package.json'
                     appVersion = packageJson.version
-                    echo "application version: $appVersion"
+                    echo "application version: ${appVersion}"
                     }
                 }
             }
@@ -36,7 +36,7 @@ pipeline {
                sh """
                 npm install
                 ls -ltr
-                echo "application version: $appVersion"
+                echo "application version: ${appVersion}"
                """
                 }
             }
@@ -67,7 +67,7 @@ pipeline {
                     repository: "backend",
                     credentialsId: 'nexus-auth',
                     artifacts: [
-                        [artifactId: "expbackend",
+                        [artifactId: 'expbackend',
                         classifier: '',
                         file: "backend-" + "${appVersion}" + '.zip',
                         type: 'zip']
