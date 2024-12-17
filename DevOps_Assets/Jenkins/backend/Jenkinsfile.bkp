@@ -69,7 +69,7 @@ pipeline {
                     artifacts: [
                         [artifactId: 'exp-backend',
                         classifier: '',
-                        file: 'backend-' + "${nexusUrl}" + '.zip',
+                        file: 'backend-${appVersion}.zip',
                         type: 'zip']
                     ]
                 )
