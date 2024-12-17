@@ -55,6 +55,7 @@ pipeline {
 
         stage('NexusUload'){
             steps { 
+            dir('DevOps_Assets/Jenkins/backend') {
             script {
                 
                 nexusArtifactUploader(
@@ -73,7 +74,7 @@ pipeline {
                     ]
                 )
                 }
-            
+            }
             }
         }
     }
